@@ -1,0 +1,13 @@
+section.greeting {
+  width: 100%;
+  height: 350px;
+  background-image: url("https://www.greenspotsalad.com/wp-content/uploads/2019/12/banner-2019-12-18T130451-759-5dfa8671bca01-1024x536.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  h1 {
+    color: #fff;
+  }
+}

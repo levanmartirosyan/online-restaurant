@@ -1,0 +1,27 @@
+section.categoriesSec {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  .categories {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    .category {
+      transition: 0.3s ease;
+      color: #000;
+      border-radius: 8px;
+      cursor: pointer;
+      padding: 10px;
+      font-size: 15px;
+      &:hover {
+        background-color: red;
+        color: #fff;
+      }
+    }
+  }
+}
