@@ -1,5 +1,4 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { ProductsProvider } from "../pages/products/context/UseProductsProvider";
 import CartView from "../pages/cart";
 import ProductsView from "../pages/products";
 
@@ -7,11 +6,7 @@ const Router = () => {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: (
-        <ProductsProvider>
-          <ProductsView />
-        </ProductsProvider>
-      ),
+      element: <ProductsView />,
     },
     {
       path: "/cart",

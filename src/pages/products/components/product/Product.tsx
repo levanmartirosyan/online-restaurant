@@ -2,44 +2,64 @@ import "./Product.scss";
 import { BadgeCheck, CircleX } from "lucide-react";
 import type { Product } from "../../types/productItem";
 import { UseProductsProvider } from "../../context/UseProductsProvider";
+import {
+  EditOutlined,
+  EllipsisOutlined,
+  SettingOutlined,
+  ShoppingCartOutlined,
+} from "@ant-design/icons";
+import { Avatar, Card } from "antd";
+import Meta from "antd/es/card/Meta";
 
 const Product = () => {
-  const { products } = UseProductsProvider();
+  const { products, addProductToCart } = UseProductsProvider();
 
   return (
     <div className="products">
       {products.map((p: Product) => (
-        <div className="productCard" key={p.id}>
-          <div className="img">
-            <img src={p.image} alt="" />
-          </div>
-          <div className="params">
-            <div className="name">{p.name}</div>
-            <div className="spicy">Spiciness: {p.spiciness}</div>
-            <div className="nuts">
-              <span>
-                {p.nuts ? (
-                  <BadgeCheck size={16} className="success" />
-                ) : (
-                  <CircleX size={16} className="fail" />
-                )}{" "}
-                Nuts
-              </span>
-              <span>
-                {p.vegeterian ? (
-                  <BadgeCheck size={16} className="success" />
-                ) : (
-                  <CircleX size={16} className="fail" />
-                )}{" "}
-                Vegeterian
-              </span>
-            </div>
-            <div className="btn">
-              <div>{p.price}$</div>
-              <button>Add To Cart</button>
-            </div>
-          </div>
-        </div>
+        <Card
+          key={p.id}
+          style={{ width: 300 }}
+          cover={<img draggable={false} alt="example" src={p.image} />}
+          actions={[
+            <div>{p.price}$</div>,
+
+            <ShoppingCartOutlined
+              key="cart"
+              onClick={() => addProductToCart(p)}
+            />,
+          ]}
+          className="productCard"
+        >
+          <Meta
+            className="spicy"
+            title={p.name}
+            description={`Spiciness: ${p.spiciness}`}
+          />
+          <Meta
+            className="params"
+            description={
+              <div className="nuts">
+                <span>
+                  {p.nuts ? (
+                    <BadgeCheck size={16} className="success" />
+                  ) : (
+                    <CircleX size={16} className="fail" />
+                  )}{" "}
+                  Nuts
+                </span>
+                <span>
+                  {p.vegeterian ? (
+                    <BadgeCheck size={16} className="success" />
+                  ) : (
+                    <CircleX size={16} className="fail" />
+                  )}{" "}
+                  Vegeterian
+                </span>
+              </div>
+            }
+          />
+        </Card>
       ))}
     </div>
   );

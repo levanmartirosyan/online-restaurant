@@ -1,13 +1,25 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import type { Product, ProductResponse } from "../types/productItem";
+import type { CartItem, Product, ProductResponse } from "../types/productItem";
+import { useToast } from "../../../shared/toast/Toast";
 
 type TProductProvider = {
   products: Product[];
   getProductsById: (id: number) => Promise<void>;
   getAllProducts: () => Promise<void>;
+  addProductToCart: (product: Product) => void;
 };
 
-const ProductContext = createContext<TProductProvider | null>(null);
+const noopAsync = async () => {};
+const noop = () => {};
+
+const defaultValue: TProductProvider = {
+  products: [],
+  getProductsById: async (_id: number) => await noopAsync(),
+  getAllProducts: async () => await noopAsync(),
+  addProductToCart: (_product: Product) => noop(),
+};
+
+const ProductContext = createContext<TProductProvider>(defaultValue);
 
 export const ProductsProvider = ({
   children,
@@ -15,6 +27,8 @@ export const ProductsProvider = ({
   children: React.ReactNode;
 }) => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const toast = useToast();
 
   const baseUrl = "https://restaurant.stepprojects.ge/api/";
 
@@ -44,10 +58,73 @@ export const ProductsProvider = ({
     }
   };
 
+  const getCartItems = async () => {
+    try {
+      const response = await fetch(baseUrl + "Baskets/GetAll");
+      const data: CartItem[] = await response.json();
+      setCartItems(data);
+      console.log(data);
+      return data;
+    } catch (err) {
+      console.log(err);
+      return [] as CartItem[];
+    }
+  };
+  const addProductToCart = async (product: Product) => {
+    try {
+      const currentCart = await getCartItems();
+
+      const existingItem = currentCart.find(
+        (item) => item.product.id === product.id
+      );
+
+      if (existingItem) {
+        await fetch(baseUrl + "Baskets/UpdateBasket", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            quantity: existingItem.quantity + 1,
+            price: product.price,
+            productId: product.id,
+          }),
+        });
+        toast.open({
+          type: "success",
+          content: `${product.name} quantity updated in cart.`,
+        });
+      } else {
+        await fetch(baseUrl + "Baskets/AddToBasket", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            quantity: 1,
+            price: product.price,
+            productId: product.id,
+          }),
+        });
+        toast.open({
+          type: "success",
+          content: `${product.name} was added to your cart.`,
+        });
+      }
+
+      await getCartItems();
+
+      console.log("Added to cart:", product);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const value: TProductProvider = {
     products,
     getAllProducts,
     getProductsById,
+    addProductToCart,
   };
 
   return (
@@ -59,7 +136,10 @@ export const UseProductsProvider = () => {
   const context = useContext(ProductContext);
 
   if (!context) {
-    throw new Error("Use Product Provider must be used within its context");
+    console.warn(
+      "Use Product Provider used outside of a ProductsProvider — using fallback defaults."
+    );
+    return defaultValue;
   }
 
   return context;
