@@ -2,13 +2,8 @@ import "./Product.scss";
 import { BadgeCheck, CircleX } from "lucide-react";
 import type { Product } from "../../types/productItem";
 import { UseProductsProvider } from "../../context/UseProductsProvider";
-import {
-  EditOutlined,
-  EllipsisOutlined,
-  SettingOutlined,
-  ShoppingCartOutlined,
-} from "@ant-design/icons";
-import { Avatar, Card } from "antd";
+import { ShoppingCartOutlined } from "@ant-design/icons";
+import { Card } from "antd";
 import Meta from "antd/es/card/Meta";
 
 const Product = () => {

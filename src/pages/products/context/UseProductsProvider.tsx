@@ -27,7 +27,7 @@ export const ProductsProvider = ({
   children: React.ReactNode;
 }) => {
   const [products, setProducts] = useState<Product[]>([]);
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [_, setCartItems] = useState<CartItem[]>([]);
   const toast = useToast();
 
   const baseUrl = "https://restaurant.stepprojects.ge/api/";
